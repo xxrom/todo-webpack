@@ -1,0 +1,38 @@
+image: node:12.4.0-alpine
+
+stages:
+  - lint
+  - build
+  - docker
+
+lint:
+  stage: lint
+  script:
+    - yarn
+    - yarn gen
+    - yarn prettier
+    - yarn tslint
+    # TODO: tsc-lint Иногда локально падает, а на серваке все ок ?
+    - yarn tsc-lint
+
+build:
+  stage: build
+  script:
+    - yarn clean
+    - yarn
+    - yarn gen
+    - yarn build
+  artifacts:
+    paths:
+      - ./dist/
+
+docker:
+  stage: docker
+  image: docker:latest
+  when: manual
+  services:
+    - docker:dind
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build -t "$CI_REGISTRY/stopfactor/stopfactor-ui:$CI_COMMIT_REF_NAME" .
+    - docker push "$CI_REGISTRY/stopfactor/stopfactor-ui:$CI_COMMIT_REF_NAME"
