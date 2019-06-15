@@ -102,28 +102,19 @@ const optimization = {
   ],
 };
 
+const useCss = ['css-hot-loader', MiniCssExtractPlugin.loader, 'css-loader'];
+
 const rules = [
   {
     test: /\.css$/,
     include,
     exclude: [...exclude, '/.*.linaria.css/'],
-    use: [
-      'css-hot-loader',
-      MiniCssExtractPlugin.loader,
-      {
-        loader: 'css-loader',
-        // options: {
-        //   modules: true,
-        //   importLoaders: 1,
-        //   localIdentName: '[local]',
-        // },
-      },
-    ],
+    use: useCss,
   },
   {
     test: /.*\.linaria\.css/,
     exclude: excludeLinaria,
-    use: ['css-hot-loader', MiniCssExtractPlugin.loader, 'css-loader'],
+    use: useCss,
   },
   {
     test: /\.tsx$/,
@@ -139,26 +130,6 @@ const rules = [
       'linaria/loader',
       'react-hot-loader/webpack',
     ],
-  },
-  {
-    test: /\.(woff|woff2|ttf)$/,
-    exclude,
-    use: {
-      loader: 'file-loader',
-      options: {
-        name: 'fonts/[name].[ext]',
-      },
-    },
-  },
-  {
-    test: /\.(png|jpg|gif|svg)$/,
-    exclude,
-    use: {
-      loader: 'file-loader',
-      options: {
-        name: 'img/[name].[ext]',
-      },
-    },
   },
 ];
 
