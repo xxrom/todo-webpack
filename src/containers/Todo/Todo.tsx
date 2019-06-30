@@ -1,50 +1,32 @@
-import React, { useState, KeyboardEvent, useCallback } from 'react';
+import React, { useCallback, useEffect, useState, KeyboardEvent } from 'react';
 import { styled } from 'linaria/react';
+import gql from 'graphql-tag';
+import { Query } from 'react-apollo';
+import axios from 'axios';
 
-const Todo = () => {
-  const [tasks, changeTasks] = useState(['Цветы полить', 'В магазин сходить', 'Почитать']);
-  const [inputTask, changeInputTask] = useState('');
+const GET_HELLO = gql`
+  {
+    hello
+  }
+`;
 
-  const onEnter = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement> & KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        const value = event.target.value;
-        changeTasks([...tasks, value]);
-        changeInputTask('');
-      }
-    },
-    [tasks, changeTasks, changeInputTask],
-  );
-  const onInputChange = useCallback(
-    ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => changeInputTask(value),
-    [changeInputTask],
-  );
+const Todo = () => (
+  <div>
+    <Query query={GET_HELLO}>
+      {({ loading, error, data }) => {
+        console.log('data', data);
+        if (loading) {
+          return <h1>Loading...</h1>;
+        }
+        if (error) {
+          return <h1>`Error! ${error.message}`</h1>;
+        }
 
-  const onDelete = useCallback(
-    (index: number) => () => changeTasks(tasks.filter((_, innerIndex) => innerIndex !== index)),
-    [tasks, changeTasks],
-  );
-
-  return (
-    <Wrapper>
-      <Tasks>
-        <span>Todo:</span>
-        {tasks.map((task: string, index: number) => (
-          <TaskRow key={index}>
-            <Minus className="heavy" onClick={onDelete(index)} />
-            <Task>{`${index + 1}. ${task}`}</Task>
-          </TaskRow>
-        ))}
-      </Tasks>
-      <Input
-        value={inputTask}
-        onChange={onInputChange}
-        placeholder="+ задача"
-        onKeyDown={onEnter}
-      />
-    </Wrapper>
-  );
-};
+        return <div>hello</div>;
+      }}
+    </Query>
+  </div>
+);
 
 const Wrapper = styled.div`
   padding: 0.5rem;
@@ -75,7 +57,7 @@ const Minus = styled.div`
     width: 80%;
     top: 45%;
     left: 5%;
-    background: white;
+    background: gray;
   }
   &:before {
     transform: rotate(45deg);

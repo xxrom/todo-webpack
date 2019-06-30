@@ -11,7 +11,7 @@ module.exports = {
     // Переменные могу начинаться с большой буквы (styled)
     'variable-name': [true, 'allow-pascal-case'],
     // Нельзя console.log
-    'no-console': [true, 'log'],
+    'no-console': [false, 'log'],
     // Не сортировать импорты
     'ordered-imports': [false],
     // I в IProps не нужно писать для интерфейсов (правильно просто Props)
