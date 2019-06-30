@@ -4,25 +4,75 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import axios from 'axios';
 
-const GET_HELLO = gql`
+const GET_TODO = gql`
   {
-    hello
+    todo {
+      name
+    }
   }
 `;
 
+const TodoBody = ({ data }) => {
+  const { todo = ['empty'] } = data;
+  const [tasks, changeTasks] = useState(todo);
+  const [inputTask, changeInputTask] = useState('');
+
+  const onEnter = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement> & KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        const value = event.target.value;
+        changeTasks([...tasks, { name: value }]);
+        changeInputTask('');
+      }
+    },
+    [tasks, changeTasks, changeInputTask],
+  );
+  const onInputChange = useCallback(
+    ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => changeInputTask(value),
+    [changeInputTask],
+  );
+
+  const onDelete = useCallback(
+    (index: number) => () => changeTasks(tasks.filter((_, innerIndex) => innerIndex !== index)),
+    [tasks, changeTasks],
+  );
+
+  return (
+    <Wrapper>
+      <Tasks>
+        <span>Todo:</span>
+        {tasks.map((task: string, index: number) => (
+          <TaskRow key={index}>
+            <Minus className="heavy" onClick={onDelete(index)} />
+            <Task>{`${index + 1}. ${task.name}`}</Task>
+          </TaskRow>
+        ))}
+      </Tasks>
+      <Input
+        value={inputTask}
+        onChange={onInputChange}
+        placeholder="+ задача"
+        onKeyDown={onEnter}
+      />
+    </Wrapper>
+  );
+};
+
 const Todo = () => (
   <div>
-    <Query query={GET_HELLO}>
+    <Query query={GET_TODO}>
       {({ loading, error, data }) => {
         console.log('data', data);
         if (loading) {
+          console.log('loading', loading);
           return <h1>Loading...</h1>;
         }
         if (error) {
+          console.log('error', error);
           return <h1>`Error! ${error.message}`</h1>;
         }
 
-        return <div>hello</div>;
+        return <TodoBody data={data} />;
       }}
     </Query>
   </div>
