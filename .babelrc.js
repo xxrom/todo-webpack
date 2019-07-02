@@ -19,10 +19,6 @@ module.exports = {
     [
       'transform-imports',
       {
-        '@material-ui/core': {
-          transform: '@material-ui/core/${member}',
-          preventFullImport: true,
-        },
         '@components': {
           transform: function(importName) {
             process.stdout.write('.');

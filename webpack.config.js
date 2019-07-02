@@ -133,16 +133,6 @@ const rules = [
   },
 ];
 
-/* TODO:
- * С ExtractCssChunksPlugin.loader не работает 'hmr' (extract-css-chunks-webpack-plugin)
- * Если вместо этих лоадеров написать:
- *  ('css-hot-loader',
- *  MiniCssExtractPlugin.loader,)
- * И вместо:
- *  new MiniCssExtractPlugin({
- * написать:
- *  new ExtractCssChunksPlugin({
- */
 module.exports = {
   devtool: !isDev || isSourceMap ? 'source-map' : 'eval',
   mode: isDev ? 'development' : 'production',
@@ -153,7 +143,6 @@ module.exports = {
   },
   entry: {
     main: path.resolve(__dirname, 'src', 'index.tsx'),
-    ...(isDev ? {} : { vendor: '@babel/polyfill' }),
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
