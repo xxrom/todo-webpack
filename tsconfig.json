@@ -16,7 +16,9 @@
     "baseUrl": "./",
     "removeComments": true,
     "paths": {
-      "@components": ["src/components"]
+      "@components": ["src/components"],
+      "@HOC": ["src/HOC"],
+      "@HOC/*": ["src/HOC/*"]
     }
   }
 }

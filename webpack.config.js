@@ -166,6 +166,7 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.css'],
     alias: {
       '@components': path.resolve(__dirname, 'src/components'),
+      '@HOC': path.resolve(__dirname, 'src/HOC'),
       'react-dom': '@hot-loader/react-dom',
     },
   },
