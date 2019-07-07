@@ -7,7 +7,7 @@ import { ApolloProvider } from 'react-apollo';
 import Routes from '../../Routes/Routes';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/',
+  uri: 'http://localhost:4000/graphql',
 });
 
 const App: React.FC<{}> = () => (

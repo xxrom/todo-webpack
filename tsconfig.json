@@ -18,7 +18,8 @@
     "paths": {
       "@components": ["src/components"],
       "@HOC": ["src/HOC"],
-      "@HOC/*": ["src/HOC/*"]
+      "@HOC/*": ["src/HOC/*"],
+      "@utils": ["src/utils"]
     }
   }
 }

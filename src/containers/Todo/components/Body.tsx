@@ -6,7 +6,7 @@ import { UploadButton } from './';
 interface TodoItemProps {
   name: string;
 }
-interface TodoArrayProps {
+export interface TodoArrayProps {
   todo: Array<TodoItemProps>;
 }
 export interface BodyProps {
@@ -55,7 +55,7 @@ const Body = ({ data }: BodyProps) => {
         placeholder="+ задача"
         onKeyDown={onEnter}
       />
-      <UploadButton>Upload</UploadButton>
+      <UploadButton tasks={tasks}>Upload</UploadButton>
     </Wrapper>
   );
 };
