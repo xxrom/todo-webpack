@@ -1,19 +1,11 @@
 import React from 'react';
 import { styled } from 'linaria/react';
+import { useMutation } from 'react-apollo-hooks';
 import gql from 'graphql-tag';
-import { Mutation, TodoArrayProps } from 'react-apollo';
 import { delTypeName } from '@utils';
 
-// const REPLACE_TASKS = gql`
-//   input TaskInput {
-//     name: String
-//   }
-//   mutation ReplaceTasks($tasks: [TaskInput]!) {
-//     replaceTasks(tasks: $tasks) {
-//       name: String
-//     }
-//   }
-// `;
+import { TodoArrayProps } from './Body';
+
 const REPLACE_TASKS = gql`
   mutation replaceTasks($tasks: [TaskInput!]!) {
     replaceTasks(tasks: $tasks) {
@@ -22,17 +14,16 @@ const REPLACE_TASKS = gql`
   }
 `;
 
-const onUpload = () => {
-  console.log('tasks', props.tasks);
-  console.log('utils', delTypeName(props.tasks));
-  return replaceTasks({ variables: { tasks: delTypeName(props.tasks) } });
+interface UploadButtonProps {
+  tasks: TodoArrayProps['todo'];
+  children: React.ReactChild;
+}
+const UploadButton = (props: UploadButtonProps) => {
+  const onUpdate = useMutation(REPLACE_TASKS, {
+    variables: { tasks: delTypeName(props.tasks) },
+  });
+  return <Button onClick={onUpdate}>{props.children}</Button>;
 };
-
-const UploadButton = (props: { tasks: TodoArrayProps['todo']; children: React.ReactChild }) => (
-  <Mutation mutation={REPLACE_TASKS}>
-    {(replaceTasks) => <Button onClick={onUpload}>{props.children}</Button>}
-  </Mutation>
-);
 
 export { UploadButton };
 

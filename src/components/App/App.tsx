@@ -3,6 +3,7 @@ import { hot } from 'react-hot-loader/root';
 import { BrowserRouter } from 'react-router-dom';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
 
 import Routes from '../../Routes/Routes';
 
@@ -12,9 +13,11 @@ const client = new ApolloClient({
 
 const App: React.FC<{}> = () => (
   <ApolloProvider client={client}>
-    <BrowserRouter>
-      <Routes />
-    </BrowserRouter>
+    <ApolloHooksProvider client={client}>
+      <BrowserRouter>
+        <Routes />
+      </BrowserRouter>
+    </ApolloHooksProvider>
   </ApolloProvider>
 );
 
