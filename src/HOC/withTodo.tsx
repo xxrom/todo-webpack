@@ -10,6 +10,10 @@ const GET_TODO = gql`
   }
 `;
 
+/*
+ * Example
+ * const Todo = withTodo(({ data }: BodyProps) => <Body data={data} />);
+ */
 const withTodo = (Component: React.ElementType) => (props: any) => (
   <Query query={GET_TODO}>
     {({ loading, error, data }: any) => {
