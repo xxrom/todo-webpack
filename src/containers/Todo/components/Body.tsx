@@ -1,7 +1,26 @@
 import React, { useCallback, useState, KeyboardEvent } from 'react';
 import { styled } from 'linaria/react';
+import { useMutation } from 'react-apollo-hooks';
+import gql from 'graphql-tag';
 
 import { UploadButton } from './';
+
+const DELETE_TASK = gql`
+  mutation deleteTask($id: ID) {
+    deleteTask(id: $id) {
+      id
+    }
+  }
+`;
+
+const ADD_TASK = gql`
+  mutation addTask($task: TaskInput) {
+    addTask(task: $task) {
+      id
+      name
+    }
+  }
+`;
 
 interface TodoItemProps {
   name: string;
@@ -17,14 +36,20 @@ const Body = ({ data }: BodyProps) => {
   const { todo = [{ name: 'empty' }] } = data;
   const [tasks, changeTasks] = useState(todo);
   const [inputTask, changeInputTask] = useState('');
+  const useDeleteTaskMutation = useMutation(DELETE_TASK);
+  const useAddTaskQuery = useMutation(ADD_TASK);
 
   const onEnter = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement> & KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        const value = event.target.value;
-        changeTasks([...tasks, { name: value }]);
-        changeInputTask('');
+    async (event: React.ChangeEvent<HTMLInputElement> & KeyboardEvent) => {
+      if (event.key !== 'Enter') {
+        return;
       }
+
+      const value = event.target.value;
+      const addedTask = await useAddTaskQuery({ variables: { task: { name: value } } });
+      console.log('addedTask', addedTask);
+      changeTasks([...tasks, addedTask.data.addTask]);
+      changeInputTask('');
     },
     [tasks, changeTasks, changeInputTask],
   );
@@ -34,7 +59,11 @@ const Body = ({ data }: BodyProps) => {
   );
 
   const onDelete = useCallback(
-    (index: number) => () => changeTasks(tasks.filter((_, innerIndex) => innerIndex !== index)),
+    (index: number) => async () => {
+      const deletedObj = await useDeleteTaskMutation({ variables: { id: index } });
+      console.log('deletedObj', deletedObj);
+      changeTasks(tasks.filter((_, innerIndex) => innerIndex !== index));
+    },
     [tasks, changeTasks],
   );
 
