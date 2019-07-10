@@ -4,21 +4,22 @@ import gql from 'graphql-tag';
 
 import { Body } from './components';
 
-const GET_TODO = gql`
+const GET_TASKS = gql`
   {
-    todo {
+    getTasks {
+      id
       name
     }
   }
 `;
 
 const Todo = () => {
-  const { data, error, loading } = useQuery(GET_TODO);
+  const { data, error, loading } = useQuery(GET_TASKS);
   if (loading || error) {
     return <h1>{loading ? 'Loading...' : `Error! ${error!.message}`}</h1>;
   }
 
-  return <Body data={data} />;
+  return <Body data={data.getTasks} />;
 };
 
 export { Todo };

@@ -3,8 +3,6 @@ import { styled } from 'linaria/react';
 import { useMutation } from 'react-apollo-hooks';
 import gql from 'graphql-tag';
 
-import { UploadButton } from './';
-
 const DELETE_TASK = gql`
   mutation deleteTask($id: ID) {
     deleteTask(id: $id) {
@@ -23,18 +21,16 @@ const ADD_TASK = gql`
 `;
 
 interface TodoItemProps {
+  id: string;
   name: string;
 }
-export interface TodoArrayProps {
-  todo: Array<TodoItemProps>;
-}
 export interface BodyProps {
-  data: TodoArrayProps;
+  data: Array<TodoItemProps>;
 }
 
-const Body = ({ data }: BodyProps) => {
-  const { todo = [{ name: 'empty' }] } = data;
-  const [tasks, changeTasks] = useState(todo);
+const Body = (props: BodyProps) => {
+  const { data = [{ id: '1', name: 'empty' }] } = props;
+  const [tasks, changeTasks] = useState(data);
   const [inputTask, changeInputTask] = useState('');
   const useDeleteTaskMutation = useMutation(DELETE_TASK);
   const useAddTaskQuery = useMutation(ADD_TASK);
@@ -47,24 +43,23 @@ const Body = ({ data }: BodyProps) => {
 
       const value = event.target.value;
       const addedTask = await useAddTaskQuery({ variables: { task: { name: value } } });
-      console.log('addedTask', addedTask);
       changeTasks([...tasks, addedTask.data.addTask]);
       changeInputTask('');
     },
     [tasks, changeTasks, changeInputTask],
   );
+
   const onInputChange = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => changeInputTask(value),
     [changeInputTask],
   );
-
   const onDelete = useCallback(
-    (index: number) => async () => {
-      const deletedObj = await useDeleteTaskMutation({ variables: { id: index } });
+    (id: string, index: number) => async () => {
+      const deletedObj = await useDeleteTaskMutation({ variables: { id } });
       console.log('deletedObj', deletedObj);
       changeTasks(tasks.filter((_, innerIndex) => innerIndex !== index));
     },
-    [tasks, changeTasks],
+    [tasks, changeTasks, useDeleteTaskMutation],
   );
 
   return (
@@ -73,7 +68,7 @@ const Body = ({ data }: BodyProps) => {
         <span>Todo:</span>
         {tasks.map((task: TodoItemProps, index: number) => (
           <TaskRow key={index}>
-            <Minus className="heavy" onClick={onDelete(index)} />
+            <Minus className="heavy" onClick={onDelete(task.id, index)} />
             <Task>{`${index + 1}. ${task.name}`}</Task>
           </TaskRow>
         ))}
@@ -84,7 +79,6 @@ const Body = ({ data }: BodyProps) => {
         placeholder="+ задача"
         onKeyDown={onEnter}
       />
-      <UploadButton tasks={tasks}>Upload</UploadButton>
     </Wrapper>
   );
 };
@@ -97,6 +91,7 @@ const Wrapper = styled.div`
 `;
 
 const Tasks = styled.div`
+  width: 100%;
   border: 1px solid gray;
 `;
 const TaskRow = styled.div`
@@ -134,6 +129,15 @@ const Task = styled.div`
 `;
 
 const Input = styled.input`
+  width: 100%;
   font-size: 1.2rem;
-  border: 1px solid gray;
+
+  border: 0;
+  border-bottom: 1px solid gray;
+
+  &:focus {
+    outline: none;
+    border: 0;
+    border-bottom: 1px solid white;
+  }
 `;
