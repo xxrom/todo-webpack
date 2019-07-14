@@ -9,7 +9,7 @@ import Routes from '../../Routes/Routes';
 
 const client = new ApolloClient({
   // uri: 'http://localhost:4000/graphql',
-  uri: 'http://mysterious-lowlands-67766.herokuapp.com/graphql',
+  uri: 'https://mysterious-lowlands-67766.herokuapp.com/graphql',
 });
 
 const App: React.FC<{}> = () => (
