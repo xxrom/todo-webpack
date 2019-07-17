@@ -7,7 +7,6 @@ import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
 
 import Routes from '../../Routes/Routes';
 
-// Test
 const client = new ApolloClient({
   uri:
     process.env.NODE_ENV === 'development'
