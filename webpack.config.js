@@ -4,8 +4,6 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 
 // Код, если нужно проанализировать bundle
@@ -40,19 +38,7 @@ const pluginsCommon = [
   }),
 ];
 
-const pluginsDev = [
-  new HardSourceWebpackPlugin(),
-  new HardSourceWebpackPlugin.ExcludeModulePlugin([
-    {
-      test: /css-loader/,
-    },
-  ]),
-  new ProgressBarPlugin({
-    format: '[:bar] :percent [:msg] ',
-    clear: true,
-  }),
-];
-
+const pluginsDev = [];
 const pluginsBuild = [
   new CompressionPlugin({
     algorithm: 'gzip',

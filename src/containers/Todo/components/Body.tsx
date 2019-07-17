@@ -55,6 +55,7 @@ const Body = (props: BodyProps) => {
   );
   const onDelete = useCallback(
     (id: string, index: number) => async () => {
+      console.log(`task id = ${id}`);
       const deletedObj = await useDeleteTaskMutation({ variables: { id } });
       console.log('deletedObj', deletedObj);
       changeTasks(tasks.filter((_, innerIndex) => innerIndex !== index));
@@ -66,12 +67,15 @@ const Body = (props: BodyProps) => {
     <Wrapper>
       <Tasks>
         <span>Todo:</span>
-        {tasks.map((task: TodoItemProps, index: number) => (
-          <TaskRow key={index}>
-            <Minus className="heavy" onClick={onDelete(task.id, index)} />
-            <Task>{`${index + 1}. ${task.name}`}</Task>
-          </TaskRow>
-        ))}
+        {tasks.map((task: TodoItemProps, index: number) => {
+          console.log('task', task);
+          return (
+            <TaskRow key={index}>
+              <Minus className="heavy" onClick={onDelete(task.id, index)} />
+              <Task>{`${index + 1}. ${task.name}`}</Task>
+            </TaskRow>
+          );
+        })}
       </Tasks>
       <Input
         value={inputTask}
@@ -88,6 +92,8 @@ export { Body };
 const Wrapper = styled.div`
   padding: 0.5rem;
   margin: 0.5rem;
+  max-width: 20rem;
+  min-width: 10rem;
 `;
 
 const Tasks = styled.div`
